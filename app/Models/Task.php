@@ -17,4 +17,9 @@ class Task extends Model
         'long_description',
     ];
 
+    public function toggleCompleted(): void
+    {
+        $this->completed = !$this->completed;
+        $this->save();
+    }
 }
