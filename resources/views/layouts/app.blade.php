@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laravel Task List</title>
 
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <!-- Alpine.js via CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style type="text/tailwindcss">
         .btn {
