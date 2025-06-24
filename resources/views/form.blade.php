@@ -5,6 +5,8 @@
             @apply text-red-500 text-sm/6 mt-3
         }
     </style>
+@endsection
+
 @section('content')
     <form action="{{ isset($task) ? route('tasks.update',['task' => $task]) : route('tasks.store') }}" method="POST">
         <div class="space-y-12">
