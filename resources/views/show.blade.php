@@ -28,7 +28,7 @@
         </p>
         @if ($task->completed == 0)
             <!-- Delete Form -->
-            <div class="mt-6 flex justify-start items-center space-x-2">
+            <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
                 <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST" class="inline">
                     @csrf
                     @method('PATCH')
@@ -37,41 +37,44 @@
                         ✅ Mark as Completed
                     </button>
                 </form>
-
-                <a href="{{ route('tasks.edit', ['task' => $task]) }}" class="btn bg-blue-400 hover:bg-blue-500">Edit
+                <a
+                href="{{ route('tasks.edit', ['task' => $task]) }}"
+                class="btn bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Edit
                     Task</a>
-                    <div x-data="{ open: false }">
-                        <!-- Delete Button (Opens Modal) -->
-                        <button type="button" @click="open = true"
-                            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
-                            🗑 Delete Task
-                        </button>
+                <div x-data="{ open: false }">
+                    <!-- Delete Button (Opens Modal) -->
+                    <button type="button" @click="open = true"
+                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+                        🗑 Delete Task
+                    </button>
 
-                        <!-- Delete Confirmation Modal -->
-                        <div x-show="open" class="fixed inset-0 bg-gray-500/50 bg-opacity-50 flex items-center justify-center">
-                            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-                                <h2 class="text-lg font-semibold text-gray-800">Confirmation</h2>
-                                <p class="text-gray-600 mt-2">Are you sure you want to delete this task? This action cannot be undone.</p>
+                    <!-- Delete Confirmation Modal -->
+                    <div x-show="open" x-cloak
+                        class="fixed inset-0 bg-gray-500/50 bg-opacity-50 flex items-center justify-center">
+                        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 class="text-lg font-semibold text-gray-800">Confirmation</h2>
+                            <p class="text-gray-600 mt-2">Are you sure you want to delete this task? This action cannot be
+                                undone.</p>
 
-                                <div class="flex justify-end mt-4">
-                                    <!-- Cancel Button -->
-                                    <button @click="open = false"
-                                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded mr-2">
-                                        Cancel
+                            <div class="flex justify-end mt-4">
+                                <!-- Cancel Button -->
+                                <button @click="open = false"
+                                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded mr-2">
+                                    Cancel
+                                </button>
+
+                                <!-- Confirm Delete Form -->
+                                <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                                        Yes, Delete
                                     </button>
-
-                                    <!-- Confirm Delete Form -->
-                                    <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
-                                            Yes, Delete
-                                        </button>
-                                    </form>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
 
             </div>
         @else
