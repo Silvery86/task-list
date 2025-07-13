@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $task->title)
+@section('title', "Task Detail")
 
 @section('content')
     <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-6">
@@ -15,7 +15,7 @@
         <p class="mt-4 text-sm text-gray-500">
             <span class="font-semibold">Status:</span>
             <span class="{{ $task->completed ? 'text-green-600' : 'text-red-600' }}">
-                {{ $task->completed ? 'Completed' : 'In Completed' }}
+                {{ $task->completed ? 'Completed' : 'Incompleted' }}
             </span>
         </p>
 
@@ -78,14 +78,16 @@
 
             </div>
         @else
+         <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
             <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST" class="inline">
                 @csrf
                 @method('PATCH')
                 <button type="submit"
                     class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
-                    Mark as In Completed
+                    Mark as Incompleted
                 </button>
             </form>
+         </div>
         @endif
         <!-- Back Link -->
         <a href="{{ route('tasks.index') }}" class="inline-block mt-4 text-blue-500 hover:underline">
