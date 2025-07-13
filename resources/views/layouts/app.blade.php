@@ -17,7 +17,7 @@
     @yield('styles')
 </head>
 
-<body>
+<body class="bg-gray-100">
     @include('nav')
     @include('page_heading')
     <main class="container mx-auto p-6 max-w-4xl">
