@@ -1,10 +1,12 @@
 @extends('layouts.app')
 @section('title', 'Task List')
 @section('content')
-    <div class="flex flex-col justify-center items-center gap-4">
+    <div class="flex flex-col justify-center items-center gap-2">
         @if (count($tasks) > 0)
             @foreach ($tasks as $task)
-                <a href="{{ route('tasks.show', ['task' => $task->id]) }}">
+                <a
+                class="w-full h-[25vh]"
+                href="{{ route('tasks.show', ['task' => $task->id]) }}">
                     <div class="px-5 py-3 mt-3 border border-gray-300 mx-5 rounded-xl">
                         <h3 class="pt-2 text-base/7 font-semibold text-gray-900
                             {{ $task->completed == 1 ? 'line-through text-gray-500' : '' }}">
