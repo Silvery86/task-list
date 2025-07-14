@@ -15,7 +15,16 @@ class Task extends Model
         'title',
         'description',
         'long_description',
+        'deadline',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'deadline' => 'datetime',
+            'completed' => 'boolean',
+        ];
+    }
 
     public function toggleCompleted(): void
     {
