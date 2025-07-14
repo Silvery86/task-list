@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "Task Detail")
+@section('title', 'Task Detail')
 
 @section('content')
     <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-6">
@@ -10,6 +10,14 @@
 
         @if ($task->long_description)
             <p class="mt-4 text-gray-700">{{ $task->long_description }}</p>
+        @endif
+
+        @if ($task->deadline)
+            <div class="mt-2 flex items-center gap-1" x-data="countdown('{{ $task->deadline }}')" x-init="init()">
+                <span class="font-semibold">Remaining:</span>
+                <span :class="color()" x-text="remaining"></span>
+                <span x-show="showAlert()" class="animate-shake">⚠️</span>
+            </div>
         @endif
 
         <p class="mt-4 text-sm text-gray-500">
@@ -37,9 +45,8 @@
                         ✅ Mark as Completed
                     </button>
                 </form>
-                <a
-                href="{{ route('tasks.edit', ['task' => $task]) }}"
-                class="btn bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Edit
+                <a href="{{ route('tasks.edit', ['task' => $task]) }}"
+                    class="btn bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Edit
                     Task</a>
                 <div x-data="{ open: false }">
                     <!-- Delete Button (Opens Modal) -->
@@ -78,16 +85,16 @@
 
             </div>
         @else
-         <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
-            <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST" class="inline">
-                @csrf
-                @method('PATCH')
-                <button type="submit"
-                    class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
-                    Mark as Incompleted
-                </button>
-            </form>
-         </div>
+            <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
+                <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST" class="inline">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit"
+                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+                        Mark as Incompleted
+                    </button>
+                </form>
+            </div>
         @endif
         <!-- Back Link -->
         <a href="{{ route('tasks.index') }}" class="inline-block mt-4 text-blue-500 hover:underline">

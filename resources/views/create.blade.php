@@ -6,7 +6,7 @@
             @apply text-red-500 text-sm/6 mt-3;
         }
     </style>
-@endsectionca
+@endsection
 @section('content')
     @include('form')
 @endsection

@@ -30,6 +30,15 @@
                         <p class="error-message mt-3 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="col-span-full">
+                    <label for="deadline" class="block text-sm/6 font-medium text-gray-900">Deadline</label>
+                    <input type="datetime-local" name="deadline" id="deadline"
+                        value="{{ isset($task) && $task->deadline ? $task->deadline->format('Y-m-d\\TH:i') : old('deadline') }}"
+                        class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm {{ $errors->has('deadline') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('deadline')
+                        <p class="error-message mt-3 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
                 <div class="col-span-full flex justify-center">
                     <button type="submit" class="btn bg-green-500 hover:bg-green-600 px-3 py-2">
                         @isset($task)
