@@ -3,74 +3,90 @@
 @section('title', 'Task Detail')
 
 @section('content')
-    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ $task->title }}</h1>
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-6">
+        <div class="flex flex-col gap-2 md:flex-row">
+            <div class="w-full md:w-1/2">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ $task->title }}</h1>
 
-        <p class="text-gray-600">{{ $task->description }}</p>
+                <p class="text-gray-600 mb-2">{{ $task->description }}</p>
 
-        @if ($task->long_description)
-            <p class="mt-4 text-gray-700">{{ $task->long_description }}</p>
-        @endif
+                @if ($task->long_description)
+                    <p class="text-gray-700 mb-4">{{ $task->long_description }}</p>
+                @endif
 
-        @if ($task->deadline)
-            <div class="mt-2 flex items-center gap-1" x-data="countdown('{{ $task->deadline }}')" x-init="init()">
-                <span class="font-semibold">Remaining:</span>
-                <span :class="color()" x-text="remaining"></span>
-                <span x-show="showAlert()" class="animate-shake">⚠️</span>
+
             </div>
-        @endif
 
-        <p class="mt-4 text-sm text-gray-500">
-            <span class="font-semibold">Status:</span>
-            <span class="{{ $task->completed ? 'text-green-600' : 'text-red-600' }}">
-                {{ $task->completed ? 'Completed' : 'Incompleted' }}
+            @if ($task->deadline)
+                <div class="w-full md:w-1/2" x-data="countdown('{{ $task->deadline }}', '{{ $task->created_at }}')" x-init="init()">
+                    <div class="text-sm mb-2">
+                        <span class="font-semibold">Total time:</span>
+                        <span x-text="total()"></span>
+                    </div>
+
+                    <div class="text-sm mb-2 flex items-center">
+                        <span class="font-semibold mr-1">Remaining:</span>
+                        <span :class="color()" x-text="remaining"></span>
+                        <svg x-show="showAlert()" xmlns="http://www.w3.org/2000/svg"
+                            class="w-4 h-4 ml-2 animate-shake text-red-600" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01M4.93 4.93a10 10 0 1114.14 14.14A10 10 0 014.93 4.93z" />
+                        </svg>
+                    </div>
+
+                    <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-600 transition-all duration-500"
+                            :style="`width: ${progressPercent()}%`"></div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <div class="mt-4 text-sm text-gray-500 flex justify-between flex-wrap gap-2">
+            <span>
+                <strong>Status:</strong> <span class="{{ $task->completed ? 'text-green-600' : 'text-red-600' }}">
+                    {{ $task->completed ? 'Completed' : 'Incompleted' }}
+                </span>
             </span>
-        </p>
+            <span><strong>Created At:</strong> {{ $task->created_at->format('M d, Y H:i') }}</span>
+            <span><strong>Updated At:</strong> {{ $task->updated_at->diffForHumans() }}</span>
+        </div>
 
-        <p class="text-sm text-gray-500 mt-2">
-            <span class="font-semibold">Created At:</span> {{ $task->created_at->format('M d, Y') }}
-        </p>
+        <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
+            <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <button type="submit"
+                    class="{{ $task->completed ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}
+                           text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+                    {{ $task->completed ? 'Mark as Incompleted' : '✅ Mark as Completed' }}
+                </button>
+            </form>
 
-        <p class="text-sm text-gray-500">
-            <span class="font-semibold">Updated At:</span> {{ $task->updated_at->diffForHumans() }}
-        </p>
-        @if ($task->completed == 0)
-            <!-- Delete Form -->
-            <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
-                <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST" class="inline">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit"
-                        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
-                        ✅ Mark as Completed
-                    </button>
-                </form>
+            @if ($task->completed == 0)
                 <a href="{{ route('tasks.edit', ['task' => $task]) }}"
-                    class="btn bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Edit
-                    Task</a>
+                    class="bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+                    🖋️ Edit Task
+                </a>
+
                 <div x-data="{ open: false }">
-                    <!-- Delete Button (Opens Modal) -->
                     <button type="button" @click="open = true"
                         class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
                         🗑 Delete Task
                     </button>
 
-                    <!-- Delete Confirmation Modal -->
-                    <div x-show="open" x-cloak
-                        class="fixed inset-0 bg-gray-500/50 bg-opacity-50 flex items-center justify-center">
+                    <div x-show="open" x-cloak class="fixed inset-0 bg-gray-500/50 flex items-center justify-center">
                         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
                             <h2 class="text-lg font-semibold text-gray-800">Confirmation</h2>
-                            <p class="text-gray-600 mt-2">Are you sure you want to delete this task? This action cannot be
-                                undone.</p>
+                            <p class="text-gray-600 mt-2">Are you sure you want to delete this task?</p>
 
                             <div class="flex justify-end mt-4">
-                                <!-- Cancel Button -->
                                 <button @click="open = false"
                                     class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded mr-2">
                                     Cancel
                                 </button>
 
-                                <!-- Confirm Delete Form -->
                                 <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
@@ -82,24 +98,11 @@
                         </div>
                     </div>
                 </div>
+            @endif
+        </div>
 
-            </div>
-        @else
-            <div class="mt-6 flex flex-wrap justify-start items-center gap-2">
-                <form action="{{ route('tasks.toggle.completed', $task) }}" method="POST" class="inline">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit"
-                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
-                        Mark as Incompleted
-                    </button>
-                </form>
-            </div>
-        @endif
-        <!-- Back Link -->
-        <a href="{{ route('tasks.index') }}" class="inline-block mt-4 text-blue-500 hover:underline">
+        <a href="{{ route('tasks.index') }}" class="inline-block mt-6 text-blue-500 hover:underline">
             ⬅ Back to Tasks
         </a>
     </div>
-
 @endsection
